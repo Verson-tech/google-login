@@ -4,11 +4,10 @@
   var firebaseConfig = {
     apiKey: "",
     authDomain: "",
-    databaseURL: "",
     projectId: "",
     storageBucket: "",
-    messagingSenderId: "",
-    appId: "",
+    messagingSenderId: "3",
+    appId: ""
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
@@ -21,14 +20,6 @@
   const logout = document.getElementById("logout");
   const loggedInStatus = document.getElementById("loggedInStatus");
   const googlelogin = document.getElementById("googlelogin");
-
-  //TODO: Add Google Sign in
-  googlelogin.addEventListener("click", (e) => {
-    console.log("google sign in clicked");
-
-    // TODO: Use firebase.auth.GoogleAuthProvider() to implement Google sign in
-    // Hint: the user email address is in the results user object: result.user.email
-  });
 
   // login
   login.addEventListener("click", (e) => {
@@ -49,6 +40,28 @@
       password.value
     );
     promise.catch((e) => console.log(e.message));
+  });
+
+  //Google Login
+  googlelogin.addEventListener("click", (e) => {
+    console.log("google clicked");
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then(function (result) {
+        loggedInStatus.innerText = `You are logged in using the following email: ${result.user.email}`;
+        login.style.display = "none";
+        signup.style.display = "none";
+        email.style.display = "none";
+        password.style.display = "none";
+        googlelogin.style.display = "none";
+        logout.style.display = "inline";
+      })
+      .catch(function (error) {
+        console.log(error.code);
+        console.log(error.message);
+      });
   });
 
   // logout
@@ -75,7 +88,7 @@
       email.style.display = "inline";
       googlelogin.style.display = "inline";
       password.style.display = "inline";
-      logout.style.display = "none";
+      logout.style.display = "inline";
     }
   });
 })();
